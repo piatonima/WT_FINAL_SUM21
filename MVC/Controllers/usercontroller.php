@@ -6,11 +6,9 @@
 	$err_uname="";
 	$pass="";
 	$err_pass="";
-	$cpass="";
-	$err_cpass="";
 	$email="";
 	$err_email="";
-	
+	$err_db="";
 	
 	$hasError=false;
 	
@@ -21,67 +19,26 @@
 			$err_name="Name Required";
 			$hasError = true;
 		}
-		elseif(strlen($_POST["name"]) <=3){
-			$err_name="Name Must be greater than 3";
-			$hasError = true;
-		}
 		else{
 			$name=$_POST["name"];
 		}
-		if(empty($_POST["username"])){
+		if(empty($_POST["uname"])){
 			$err_uname="Username Required";
 			$hasError = true;
 		}
-		elseif(isset($_POST[""])){
-		    echo ($_POST["username"]);
-		}
-	    elseif(strlen($_POST["username"])<6){
-			$err_uname="Username Must Be 6 characters Long";
-			$hasError = true;
-		}
-		elseif(strpos($_POST["username"],"")){
-			$err_uname="Username Should Not Contain White Space";
-			$hasError = true;
-			
-		}
 		else{
-			$uname=$_POST["username"];
+			$uname=$_POST["uname"];
 		}
-		if(empty($_POST["password"])){
+		if(empty($_POST["pass"])){
 			$err_pass="password Required";
 			$hasError = true;
 			
 		}
 		
-		elseif(strlen($_POST["password"])<6){
-			$err_pass="password must Be 6 characters Long";
-			$hasError = true;
-		}
-		elseif(strpos($_POST["password"],"")){
-			$err_pass="Username Should Not Contain White Space";
-			$hasError = true;
-
-		}
 		else{
-			$pass = $_POST["password"];
+			$pass = $_POST["pass"];
 		}
-		if(empty($_POST["confirm_password"])){
-			$err_cpass="Retype password";
-			$hasError = true;
-		}
-		elseif(strlen($_POST["password"])<6){
-			$err_pass="password must Be 6 characters Long";
-		}
-		else{
-			$cpass = $_POST["confirm_password"];
-		}
-		if ($pass!= $cpass) {
-            $err_cpass = "you have to write both password correctly";
-			$hasError = true;
-		}
-		else{
-			$cpass = $_POST["confirm_password"];
-		}
+		
 		
 		if(empty($_POST["email"])){
 			$err_email="valid email Required";
@@ -90,21 +47,52 @@
 		else{
 			$email = $_POST["email"];
 		}
-		
+
 		if(!$hasError){
 			
-			insertuser($name, $uname, $_POST["pass"], $_POST["email"]);
-			if($rs== true){
+			$rs=insertUser($name,$uname,$_POST["pass"],$_POST["email"]);
+			if($rs==true){
 				header("Location: login.php");
 			}
-		}
-		function insertuser($name,$uname,$pass,$email){
-			$query= "insert into user values(NULL, '$name', '$uname', '$pass', '$email')";
-			return execute($query);
-		}
-			
+			$err_db= $rs;
 			
 		}
-	
-	
+		else if (isset ($_POST["Login"])){
+			if(empty($_POST["uname"])){
+				$err_uname="Username Required";
+				$hasError = true;
+			}
+			else{
+				$uname=$_POST["uname"];
+			}
+			if(empty($_POST["pass"])){
+				$err_pass="pass Required";
+				$hasError = true;
+			}
+			else{
+				$pass=$_POST["pass"];
+			}
+			if(authenticateUser($_POST["uname"],$_POST["pass"])){
+				session_start();
+				$_SESSION["Loggeduser"] = $_POST["uname"];
+				header("Location: add_category.php");
+			}
+			$err_db= "Username password invalid";
+		}
+
+	}
+
+	function insertUser($name,$uname,$pass,$email){
+		$query= "inset into users values (NULL,'$name','$uname','$pass','$email')";
+		return execute($query);	
+	}
+	function authenticateUser($uname,$pass){
+		$query ="select * from users where username='$uname' and 'password='$pass'";
+		$rs = get($query);
+		if (count($rs)>0){
+			return true;
+		}
+		return false;
+	}
+
 ?>
