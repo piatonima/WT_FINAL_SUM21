@@ -27,7 +27,7 @@
         if(authenticateUser($_POST["name"],$_POST["pass"])){
             session_start();
             $_SESSION["Loggeduser"] = $_POST["name"];
-            header("Location: add_category.php");
+            header("Location: dashboard.php");
         }
         $err_db= "Username password invalid";
     }
@@ -36,7 +36,7 @@
  
     
     function authenticateUser($name,$pass){
-        $query ="select * from users where name='$name' and 'password='$pass'";
+        $query ="select * from admin where name='$name' and 'password='$pass'";
         $rs = get($query);
         if (count($rs)>0){
             return true;
