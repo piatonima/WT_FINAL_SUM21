@@ -95,7 +95,7 @@
 			 echo $name."<br>";
 			 echo $_POST["username"]."<br>";
 			 echo $_POST["pass"]."<br>";
-			 echo $_POST["confirmPassword"]."<br>";
+			 echo $_POST["confirmPass"]."<br>";
 			 echo "Email:  ";
 			 echo $_POST["email"]."<br>";
 			 echo "Contact Number:  ";
